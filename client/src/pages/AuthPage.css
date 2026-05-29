@@ -1,0 +1,350 @@
+/* AuthPage.css */
+
+/* ── Container ── */
+.auth-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 50%, #e0e7ff 100%);
+  font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  padding: 24px 16px;
+}
+
+/* ── Card ── */
+.auth-card {
+  background: white;
+  width: 100%;
+  max-width: 460px;
+  padding: 40px;
+  border-radius: 20px;
+  box-shadow: 0 12px 40px rgba(59, 130, 246, 0.1), 0 2px 8px rgba(0,0,0,0.06);
+  animation: slideUp 0.35s ease-out;
+}
+
+/* Wider card for step 2 with more fields */
+.auth-card--wide {
+  max-width: 580px;
+}
+
+.auth-title {
+  text-align: center;
+  color: #102a43;
+  font-size: 26px;
+  font-weight: 700;
+  margin: 0 0 24px 0;
+  letter-spacing: -0.3px;
+}
+
+/* ── Mode toggle ── */
+.auth-toggle-wrapper {
+  display: flex;
+  background-color: #f0f4f8;
+  border-radius: 12px;
+  padding: 5px;
+  margin-bottom: 24px;
+  gap: 4px;
+}
+
+.toggle-btn {
+  flex: 1;
+  padding: 11px;
+  border: none;
+  border-radius: 9px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  background: transparent;
+  color: #627d98;
+}
+
+.toggle-btn.active {
+  background: white;
+  color: #2563eb;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+/* ── Step indicator ── */
+.step-indicator {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+  padding: 12px 16px;
+  background: #f8faff;
+  border-radius: 10px;
+  border: 1px solid #dbeafe;
+}
+
+.step-dot {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 700;
+  background: #e2e8f0;
+  color: #94a3b8;
+  flex-shrink: 0;
+  transition: all 0.3s ease;
+}
+
+.step-dot--active {
+  background: #2563eb;
+  color: white;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
+}
+
+.step-line {
+  flex: 1;
+  height: 2px;
+  background: #e2e8f0;
+  border-radius: 2px;
+  transition: background 0.3s ease;
+}
+
+.step-line--active {
+  background: #2563eb;
+}
+
+.step-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #64748b;
+  white-space: nowrap;
+}
+
+/* ── Error banner ── */
+.error-banner {
+  background-color: #fef2f2;
+  color: #dc2626;
+  border: 1px solid #fecaca;
+  padding: 10px 14px;
+  border-radius: 10px;
+  margin-bottom: 18px;
+  font-size: 13.5px;
+  font-weight: 500;
+}
+
+/* ── Form layout ── */
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Two-column row */
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+@media (max-width: 480px) {
+  .form-row { grid-template-columns: 1fr; }
+  .auth-card--wide { padding: 28px 20px; }
+}
+
+/* ── Input group ── */
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.input-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #334e68;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.label-icon {
+  font-size: 14px;
+}
+
+.required {
+  color: #ef4444;
+  font-size: 13px;
+}
+
+.optional {
+  color: #94a3b8;
+  font-weight: 400;
+  font-size: 12px;
+}
+
+.field-hint {
+  font-size: 11.5px;
+  color: #94a3b8;
+  margin-top: 2px;
+  line-height: 1.4;
+}
+
+/* ── Inputs & selects ── */
+.input-group input,
+.input-group select {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1.5px solid #d9e2ec;
+  border-radius: 10px;
+  font-size: 14px;
+  color: #334e68 !important;
+  background-color: #fafbfc;
+  transition: border-color 0.2s, box-shadow 0.2s, background-color 0.2s;
+  box-sizing: border-box;
+  outline: none;
+  font-family: inherit;
+}
+
+.input-group input:focus,
+.input-group select:focus {
+  border-color: #3b82f6;
+  background-color: white;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.12);
+}
+
+.input-group input::placeholder {
+  color: #b0c4d8 !important;
+  font-size: 13px;
+}
+
+/* Custom select wrapper with arrow */
+.select-wrapper {
+  position: relative;
+}
+
+.select-wrapper select {
+  appearance: none;
+  cursor: pointer;
+  padding-right: 36px;
+}
+
+.select-arrow {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #64748b;
+  font-size: 13px;
+  pointer-events: none;
+}
+
+/* ── Section divider ── */
+.section-divider {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 4px;
+}
+
+.section-divider::before,
+.section-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: #e2e8f0;
+}
+
+.section-divider span {
+  font-size: 12px;
+  font-weight: 700;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  white-space: nowrap;
+}
+
+.section-note {
+  margin: 0;
+  font-size: 12.5px;
+  color: #829ab1;
+  line-height: 1.5;
+  background: #f8faff;
+  padding: 8px 12px;
+  border-radius: 8px;
+  border-left: 3px solid #bfdbfe;
+}
+
+.section-note strong {
+  color: #475569;
+  font-style: italic;
+}
+
+/* ── Buttons ── */
+.submit-btn {
+  padding: 14px;
+  background: #2563eb;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.1s, box-shadow 0.2s;
+  letter-spacing: 0.2px;
+  margin-top: 4px;
+}
+
+.submit-btn:hover {
+  background: #1d4ed8;
+  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);
+}
+
+.submit-btn:active { transform: scale(0.98); }
+.submit-btn:disabled {
+  background: #93c5fd;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.back-btn {
+  padding: 14px 20px;
+  background: #f0f4f8;
+  color: #475569;
+  border: 1.5px solid #d9e2ec;
+  border-radius: 10px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.back-btn:hover {
+  background: #e2e8f0;
+  border-color: #b0c4d8;
+}
+
+.step2-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 4px;
+}
+
+/* ── Forgot password ── */
+.forgot-text {
+  text-align: center;
+  color: #3b82f6;
+  font-size: 13.5px;
+  font-weight: 600;
+  margin: 4px 0 0 0;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.forgot-text:hover {
+  color: #1d4ed8;
+  text-decoration: underline;
+}
+
+/* ── Animation ── */
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(18px); }
+  to   { opacity: 1; transform: translateY(0); }
+}

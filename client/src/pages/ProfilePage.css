@@ -1,0 +1,420 @@
+/* ── Root ─────────────────────────────────────────────── */
+.profile-root { max-width: 900px; margin: 0 auto; padding: 0 0 60px; animation: fadeUp 0.4s ease both; }
+
+/* ── Cover ────────────────────────────────────────────── */
+.profile-cover {
+  position: relative; height: 200px;
+  background: linear-gradient(135deg, #dbeafe 0%, #ede9fe 50%, #cffafe 100%);
+  background-size: cover; background-position: center; overflow: hidden;
+}
+.profile-cover::before {
+  content: ''; position: absolute; inset: 0;
+  background: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%232563eb' fill-opacity='0.05'%3E%3Ccircle cx='20' cy='20' r='10'/%3E%3C/g%3E%3C/svg%3E");
+}
+.profile-cover-overlay { position: absolute; inset: 0; background: linear-gradient(to bottom, transparent 50%, rgba(240,244,250,0.55)); }
+.cover-edit-btn {
+  position: absolute; bottom: 12px; right: 14px; z-index: 2;
+  display: flex; align-items: center; gap: 5px;
+  padding: 5px 12px; background: rgba(255,255,255,0.88); backdrop-filter: blur(6px);
+  border: 1px solid var(--border2); border-radius: 8px;
+  color: var(--text1); font-size: 12px; font-weight: 600; cursor: pointer; box-shadow: var(--shadow-sm);
+}
+
+/* ── Header ───────────────────────────────────────────── */
+.profile-header { display: flex; gap: 20px; padding: 0 22px 20px; border-bottom: 1px solid var(--border); background: var(--surface); }
+.profile-av-wrap { position: relative; flex-shrink: 0; margin-top: -46px; z-index: 10; }
+.profile-av { width: 90px; height: 90px; border-radius: 18px; display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: 800; color: #fff; border: 3px solid var(--surface); overflow: hidden; box-shadow: var(--shadow-md); }
+.av-edit-btn { position: absolute; bottom: -3px; right: -3px; width: 24px; height: 24px; border-radius: 7px; background: var(--accent); border: 2px solid var(--surface); color: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+
+.profile-info { flex: 1; min-width: 0; padding-top: 8px; }
+.profile-name-row { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; margin-bottom: 8px; }
+.profile-name { font-size: 22px; font-weight: 800; color: var(--text1); letter-spacing: -0.4px; }
+.profile-handle { font-size: 12.5px; color: var(--text3); margin-top: 1px; }
+.profile-actions-row { display: flex; gap: 7px; flex-shrink: 0; }
+
+/* Buttons */
+.p-btn { display: inline-flex; align-items: center; gap: 5px; padding: 7px 14px; border-radius: 9px; font-size: 12.5px; font-weight: 700; cursor: pointer; border: none; transition: all 0.15s; text-decoration: none; }
+.p-btn-primary { background: var(--accent); color: #fff; box-shadow: 0 3px 10px var(--glow); }
+.p-btn-primary:hover { opacity: 0.88; }
+.p-btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+.p-btn-outline { background: var(--surface); border: 1.5px solid var(--border2); color: var(--text1); }
+.p-btn-outline:hover { background: var(--bg2); }
+.p-btn-sm { padding: 5px 11px; font-size: 12px; }
+
+/* Bio */
+.profile-bio { font-size: 13.5px; color: var(--text2); line-height: 1.6; margin-bottom: 10px; }
+.bio-edit-inline { margin-bottom: 10px; display: flex; flex-direction: column; gap: 4px; }
+.bio-textarea { background: var(--bg); border: 1.5px solid var(--accent); border-radius: 10px; padding: 9px 12px; font-size: 13.5px; color: var(--text1); resize: vertical; outline: none; line-height: 1.5; box-shadow: 0 0 0 3px var(--glow); width: 100%; }
+.bio-char-count { font-size: 11px; color: var(--text3); text-align: right; }
+
+/* Edit fields grid */
+.edit-fields-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
+.edit-field { display: flex; flex-direction: column; gap: 4px; }
+.edit-field label { font-size: 11px; font-weight: 600; color: var(--text3); display: flex; align-items: center; gap: 4px; }
+.edit-field-full { grid-column: 1 / -1; }
+.ef-hint { font-weight: 400; font-size: 10.5px; color: var(--text3); }
+.edit-input { background: var(--bg); border: 1.5px solid var(--border); border-radius: 8px; padding: 7px 10px; font-size: 13px; color: var(--text1); outline: none; transition: border-color 0.2s; width: 100%; }
+.edit-input:focus { border-color: var(--accent); box-shadow: 0 0 0 2px var(--glow); }
+
+/* Meta chips */
+.profile-meta { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
+.meta-chip { display: flex; align-items: center; gap: 5px; font-size: 11.5px; color: var(--text2); background: var(--bg2); border: 1px solid var(--border); padding: 3px 10px; border-radius: 20px; }
+.dept-chip { background: rgba(37,99,235,0.07); border-color: rgba(37,99,235,0.2); color: var(--accent); font-weight: 600; }
+.meta-link { text-decoration: none; color: var(--text1); }
+.meta-link:hover { background: var(--bg3); }
+.membership-chip { font-size: 11px; font-weight: 600; }
+.club-chip    { background: rgba(37,99,235,0.07); border-color: rgba(37,99,235,0.2); color: #2563eb; }
+.society-chip { background: rgba(124,58,237,0.07); border-color: rgba(124,58,237,0.2); color: #7c3aed; }
+.college-chip { background: rgba(5,150,105,0.07); border-color: rgba(5,150,105,0.22); color: #059669; font-weight: 600; }
+
+/* ── Engagement / Daily XP ─────────────────────────────── */
+.engage-section { max-width: 560px; }
+.engage-header  { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 18px; }
+.engage-title   { font-size: 17px; font-weight: 800; color: var(--text1); margin-bottom: 4px; }
+.engage-subtitle{ font-size: 13px; color: var(--text2); }
+.xp-badge { display: flex; align-items: center; gap: 6px; background: linear-gradient(135deg,#fbbf24,#f97316); color: #fff; font-weight: 700; font-size: 13px; padding: 6px 14px; border-radius: 20px; box-shadow: 0 3px 10px rgba(251,191,36,0.3); white-space: nowrap; }
+
+.tasks-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 20px; }
+.task-row {
+  display: flex; align-items: center; gap: 12px;
+  padding: 12px 16px; background: var(--surface);
+  border: 1.5px solid var(--border); border-radius: 12px;
+  cursor: pointer; transition: all 0.15s;
+}
+.task-row:hover { border-color: var(--accent); box-shadow: var(--shadow-sm); }
+.task-done { background: rgba(5,150,105,0.05); border-color: rgba(5,150,105,0.25); }
+.task-icon  { font-size: 20px; flex-shrink: 0; }
+.task-label { flex: 1; font-size: 14px; font-weight: 600; color: var(--text1); }
+.task-xp    { font-size: 12px; font-weight: 700; color: #d97706; background: #fef3c7; padding: 2px 8px; border-radius: 8px; }
+.task-check { font-size: 16px; flex-shrink: 0; }
+.task-done .task-label { text-decoration: line-through; color: var(--text3); }
+
+.engage-tips { display: flex; flex-direction: column; gap: 8px; }
+.engage-tip  { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--text2); background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 10px 14px; }
+
+/* Hobbies */
+.hobbies-row { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 10px; }
+.hobby-tag { font-size: 11.5px; font-weight: 600; color: #059669; background: rgba(5,150,105,0.07); border: 1px solid rgba(5,150,105,0.2); padding: 2px 10px; border-radius: 20px; }
+
+/* Stats */
+.profile-stats { display: flex; gap: 18px; }
+.profile-stat { display: flex; flex-direction: column; align-items: center; cursor: pointer; }
+.profile-stat-val { font-size: 17px; font-weight: 800; color: var(--text1); }
+.profile-stat-lbl { font-size: 11px; color: var(--text3); margin-top: 1px; }
+
+/* ── Tabs ─────────────────────────────────────────────── */
+.profile-tabs { display: flex; align-items: center; justify-content: space-between; padding: 0 22px; border-bottom: 1px solid var(--border); background: var(--surface); position: sticky; top: var(--topbar-h); z-index: 50; box-shadow: var(--shadow-sm); }
+.tabs-row { display: flex; }
+.tab-btn { display: flex; align-items: center; gap: 6px; padding: 13px 14px; background: none; border: none; border-bottom: 2px solid transparent; color: var(--text2); font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.15s; white-space: nowrap; margin-bottom: -1px; }
+.tab-btn:hover { color: var(--text1); }
+.tab-active { color: var(--accent) !important; border-bottom-color: var(--accent) !important; }
+.tab-count { background: var(--bg3); border-radius: 8px; font-size: 10px; padding: 1px 6px; color: var(--text3); }
+.tab-active .tab-count { background: rgba(37,99,235,0.1); color: var(--accent); }
+.view-toggle { display: flex; gap: 3px; }
+.view-toggle button { width: 28px; height: 28px; border-radius: 7px; background: none; border: 1px solid var(--border); color: var(--text3); cursor: pointer; display: flex; align-items: center; justify-content: center; }
+.vt-active { background: var(--bg2) !important; color: var(--text1) !important; border-color: var(--border2) !important; }
+
+/* ── Body ─────────────────────────────────────────────── */
+.profile-body { padding: 22px; background: var(--bg); min-height: 300px; }
+.empty-state { text-align: center; color: var(--text3); font-size: 13.5px; padding: 48px 20px; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; }
+
+/* Posts grid */
+.posts-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 4px; }
+.grid-post { position: relative; aspect-ratio: 1; background: var(--surface); border-radius: 8px; overflow: hidden; cursor: pointer; border: 1px solid var(--border); }
+.grid-post-img { width:100%; height:100%; object-fit:cover; transition:transform 0.3s; }
+.grid-post:hover .grid-post-img { transform:scale(1.04); }
+.grid-post-text { padding:12px; font-size:12px; color:var(--text2); line-height:1.5; overflow:hidden; display:-webkit-box; -webkit-line-clamp:5; -webkit-box-orient:vertical; }
+.grid-post-overlay { position:absolute; inset:0; background:rgba(15,23,42,0.5); display:flex; align-items:center; justify-content:center; gap:14px; opacity:0; transition:opacity 0.2s; color:#fff; font-size:13px; font-weight:700; }
+.grid-post:hover .grid-post-overlay { opacity:1; }
+
+/* Posts list */
+.posts-list { display:flex; flex-direction:column; gap:12px; }
+.list-post { background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:15px; box-shadow:var(--shadow-sm); }
+.list-post-text { font-size:14px; color:var(--text1); line-height:1.6; margin-bottom:10px; }
+.list-post-img { width:100%; border-radius:10px; max-height:280px; object-fit:cover; margin-bottom:10px; }
+.list-post-actions { display:flex; gap:14px; font-size:13px; color:var(--text2); align-items:center; }
+.list-post-actions span { display:flex; align-items:center; gap:4px; cursor:pointer; }
+
+/* Repos */
+.repos-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+.repo-card { background:var(--surface); border:1px solid var(--border); border-radius:13px; padding:15px; box-shadow:var(--shadow-sm); transition:box-shadow 0.2s, border-color 0.2s; }
+.repo-card:hover { box-shadow:var(--shadow-md); border-color:var(--border2); }
+.repo-head { display:flex; align-items:center; gap:7px; margin-bottom:7px; }
+.repo-name { font-size:13.5px; font-weight:700; color:var(--accent); flex:1; }
+.repo-lang { font-size:10.5px; font-weight:600; padding:2px 8px; border-radius:8px; }
+.repo-del-btn { background:none; border:none; color:var(--text3); cursor:pointer; padding:3px; border-radius:5px; display:flex; align-items:center; }
+.repo-del-btn:hover { color:var(--rose); background:rgba(225,29,72,0.08); }
+.repo-desc { font-size:12px; color:var(--text2); line-height:1.5; margin-bottom:10px; }
+.repo-meta { display:flex; gap:10px; font-size:11.5px; color:var(--text3); align-items:center; }
+.repo-meta span { display:flex; align-items:center; gap:3px; }
+
+/* Skills */
+.skills-wrap { max-width:560px; }
+.skill-row { margin-bottom:16px; }
+.skill-label { display:flex; justify-content:space-between; margin-bottom:6px; }
+.skill-name { font-size:13.5px; font-weight:600; color:var(--text1); }
+.skill-pct { font-size:13px; font-weight:700; }
+.skill-bar { height:7px; background:var(--bg3); border-radius:4px; overflow:hidden; }
+.skill-fill { height:100%; border-radius:4px; transition:width 1s ease; }
+.skill-edit-row { display:flex; align-items:center; gap:8px; margin-bottom:8px; }
+.skill-del-btn { background:none; border:none; color:var(--text3); cursor:pointer; padding:4px; border-radius:6px; display:flex; }
+.skill-del-btn:hover { color:var(--rose); background:rgba(225,29,72,0.08); }
+
+/* Achievements */
+.achievements-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; }
+.achievement-card { background:var(--surface); border:1px solid var(--border); border-radius:13px; padding:20px 14px; display:flex; flex-direction:column; align-items:center; gap:7px; box-shadow:var(--shadow-sm); transition:box-shadow 0.2s, transform 0.2s; }
+.achievement-card:hover { box-shadow:var(--shadow-md); transform:translateY(-2px); border-color:var(--accent); }
+.achievement-icon { font-size:28px; }
+.achievement-label { font-size:12.5px; font-weight:700; color:var(--text1); text-align:center; }
+.achievement-sub { font-size:11px; color:var(--text3); text-align:center; }
+
+/* ── Modal ────────────────────────────────────────────── */
+.modal-overlay { position:fixed; inset:0; background:rgba(15,23,42,0.4); backdrop-filter:blur(3px); z-index:1000; display:flex; align-items:center; justify-content:center; padding:20px; }
+.modal-box { background:var(--surface); border:1px solid var(--border2); border-radius:16px; width:100%; max-width:480px; box-shadow:var(--shadow-lg); animation:fadeUp 0.22s ease both; max-height: 90vh; overflow-y: auto; }
+.modal-head { display:flex; align-items:center; justify-content:space-between; padding:15px 18px; border-bottom:1px solid var(--border); font-size:15px; font-weight:700; color:var(--text1); position:sticky; top:0; background:var(--surface); z-index:1; }
+.modal-close { background:none; border:none; color:var(--text2); cursor:pointer; width:26px; height:26px; border-radius:6px; display:flex; align-items:center; justify-content:center; }
+.modal-close:hover { background:var(--bg2); }
+.modal-body { padding:16px 18px; display:flex; flex-direction:column; gap:10px; }
+.modal-label { font-size:11.5px; font-weight:600; color:var(--text2); }
+.modal-input { width:100%; background:var(--bg); border:1.5px solid var(--border); border-radius:9px; padding:9px 12px; font-size:13px; color:var(--text1); outline:none; resize:vertical; transition:border-color 0.2s; font-family:var(--font); }
+.modal-input:focus { border-color:var(--accent); box-shadow:0 0 0 3px var(--glow); }
+.file-upload-btn { display:flex; align-items:center; gap:7px; padding:9px 13px; background:var(--bg2); border:1.5px dashed var(--border2); border-radius:9px; color:var(--text2); font-size:12.5px; cursor:pointer; transition:all 0.15s; width:100%; }
+.file-upload-btn:hover { border-color:var(--accent); color:var(--accent); }
+.modal-foot { display:flex; gap:8px; justify-content:flex-end; padding:13px 18px; border-top:1px solid var(--border); }
+
+/* ── Toast ────────────────────────────────────────────── */
+.profile-toast {
+  position: fixed; bottom: 24px; right: 24px; z-index: 9999;
+  display: flex; align-items: center; gap: 8px;
+  background: #0f172a; color: #fff; padding: 10px 18px;
+  border-radius: 10px; font-size: 13.5px; font-weight: 600;
+  box-shadow: var(--shadow-lg); animation: slideIn 0.3s ease both;
+}
+
+/* shimmer for skeleton */
+@keyframes shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position:  200% 0; }
+}
+/* ═══════════════════════════════════════════════════════
+   PATCH 1: ProfilePage.css additions
+   Add these rules to your existing ProfilePage.css
+═══════════════════════════════════════════════════════ */
+
+/* Profile avatar wrap — position the change button BELOW the pic */
+.profile-av-wrap {
+  position: relative;
+  flex-shrink: 0;
+  margin-top: -46px;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;   /* ← stack avatar + button vertically */
+  align-items: center;
+  gap: 6px;                 /* ← gap between pic and button */
+}
+
+/* The avatar itself stays the same */
+.profile-av {
+  width: 90px;
+  height: 90px;
+  border-radius: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  font-weight: 800;
+  color: #fff;
+  border: 3px solid var(--surface);
+  overflow: hidden;
+  box-shadow: var(--shadow-md);
+}
+
+/* REMOVE the old absolute-positioned av-edit-btn */
+/* Replace with this new button BELOW the avatar */
+.av-change-btn {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 12px;
+  background: var(--surface);
+  border: 1.5px solid var(--border2);
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text2);
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: var(--shadow-sm);
+  white-space: nowrap;
+}
+
+.av-change-btn:hover {
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
+  box-shadow: 0 4px 12px var(--glow);
+  transform: translateY(-1px);
+}
+
+/* Hide the old tiny corner button if it's still rendered */
+.av-edit-btn {
+  display: none !important;
+}
+
+
+/* ═══════════════════════════════════════════════════════
+   PATCH 2: In ProfilePage.jsx
+   Find the profile-av-wrap section and replace with:
+═══════════════════════════════════════════════════════
+
+  <div className="profile-av-wrap">
+    <div className="profile-av" style={{ background: photoUrl ? 'transparent' : `linear-gradient(...)` }}>
+      {photoUrl
+        ? <img src={photoUrl} alt="" style={{ width:'100%', height:'100%', objectFit:'cover', borderRadius:'inherit' }}/>
+        : <span>{displayName.slice(0,2).toUpperCase()}</span>
+      }
+    </div>
+
+    ← ADD THIS BUTTON BELOW THE AVATAR →
+    {isOwn && (
+      <>
+        <input ref={photoRef} type="file" accept="image/*" style={{ display:'none' }} onChange={handlePhoto}/>
+        <button className="av-change-btn" onClick={() => photoRef.current?.click()}>
+          📷 Change Photo
+        </button>
+      </>
+    )}
+  </div>
+
+═══════════════════════════════════════════════════════ */
+
+
+/* ═══════════════════════════════════════════════════════
+   PATCH 3: server/index.js additions for online/lastseen
+   Add these socket handlers inside io.on('connection', ...)
+═══════════════════════════════════════════════════════
+
+  // When client asks for currently online users
+  socket.on('getOnlineUsers', () => {
+    const onlineList = Array.from(onlineUsers.keys());
+    socket.emit('onlineUsers', onlineList);
+  });
+
+  // Broadcast online when user registers
+  socket.on('registerUser', (userId) => {
+    if (!userId) return;
+    if (!onlineUsers.has(userId)) onlineUsers.set(userId, new Set());
+    onlineUsers.get(userId).add(socket.id);
+    socket.data.userId = userId;
+    
+    // ← ADD: broadcast to everyone that this user is online
+    socket.broadcast.emit('userOnline', { userId });
+    broadcastCount();
+  });
+
+  // On disconnect, broadcast last seen timestamp
+  socket.on('disconnect', () => {
+    const u = socket.data.userId;
+    if (u) {
+      const set = onlineUsers.get(u);
+      if (set) {
+        set.delete(socket.id);
+        if (set.size === 0) {
+          onlineUsers.delete(u);
+          // ← ADD: broadcast offline + lastSeen
+          io.emit('userOffline', { userId: u, lastSeen: Date.now() });
+        }
+      }
+    }
+    broadcastCount();
+  });
+
+═══════════════════════════════════════════════════════ */
+
+
+/* ═══════════════════════════════════════════════════════
+   PATCH 4: Additional beautiful UI styles
+═══════════════════════════════════════════════════════ */
+
+/* Glassmorphism card variant */
+.glass-card {
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  border-radius: 16px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
+}
+[data-theme="dark"] .glass-card {
+  background: rgba(20, 24, 39, 0.7);
+  border: 1px solid rgba(148, 163, 255, 0.12);
+}
+
+/* Gradient text utility */
+.gradient-text {
+  background: linear-gradient(135deg, var(--accent), var(--violet));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Animated online dot */
+.online-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #34d399;
+  box-shadow: 0 0 0 2px var(--surface), 0 0 8px rgba(52, 211, 153, 0.6);
+  animation: onlinePulse 2s ease infinite;
+}
+@keyframes onlinePulse {
+  0%, 100% { box-shadow: 0 0 0 2px var(--surface), 0 0 6px rgba(52,211,153,0.5); }
+  50%       { box-shadow: 0 0 0 2px var(--surface), 0 0 14px rgba(52,211,153,0.8); }
+}
+
+/* Vibe poll button hover */
+.vibe-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+/* Story interaction overlay */
+.story-interact {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  padding: 16px 14px;
+  background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+.story-reply-input {
+  flex: 1;
+  background: rgba(255, 255, 255, 0.15);
+  border: 1.5px solid rgba(255, 255, 255, 0.3);
+  border-radius: 24px;
+  padding: 8px 16px;
+  color: #fff;
+  font-size: 13px;
+  outline: none;
+  backdrop-filter: blur(8px);
+}
+.story-reply-input::placeholder { color: rgba(255,255,255,0.6); }
+.story-react-btn {
+  background: rgba(255,255,255,0.15);
+  border: 1.5px solid rgba(255,255,255,0.3);
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 16px;
+  transition: all 0.15s;
+  backdrop-filter: blur(8px);
+}
+.story-react-btn:hover {
+  background: rgba(255,255,255,0.3);
+  transform: scale(1.1);
+}
