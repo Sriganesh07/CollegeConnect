@@ -35,6 +35,9 @@ export default function Topbar({ currentUserId }) {
   const searchDebounce = useRef();
   const dropdownRef = useRef();
 
+  // ── FIX: track mouse-down inside dropdown so blur doesn't fire prematurely
+  const mouseInDropdown = useRef(false);
+
   const user = (() => { try { return JSON.parse(localStorage.getItem('user')); } catch { return null; } })();
   const isAdmin = user?.role === 'admin';
   const initials = currentUserId?.slice(0, 2).toUpperCase() || 'ME';
@@ -64,6 +67,7 @@ export default function Topbar({ currentUserId }) {
     fetch(`http://localhost:5000/api/messages/unread-count`, {
       headers: { 'x-username': currentUserId },
     }).then(r => r.json()).then(d => setUnread(d.count || 0)).catch(() => {});
+
     return () => {
       socket.off('connect');
       socket.off('userCountUpdate');
@@ -72,7 +76,7 @@ export default function Topbar({ currentUserId }) {
     };
   }, [currentUserId]);
 
-  // Instagram-style search
+  // Search logic
   const doSearch = useCallback(async (query) => {
     if (!query.trim()) {
       setSearchResults({ users: [], posts: [], tags: [] });
@@ -99,9 +103,7 @@ export default function Topbar({ currentUserId }) {
             p.tags?.some(t => t.toLowerCase().includes(q))
           ).slice(0, 3)
         : [];
-      const matchedTags = TRENDING_SEARCHES.filter(t =>
-        t.toLowerCase().includes(q)
-      );
+      const matchedTags = TRENDING_SEARCHES.filter(t => t.toLowerCase().includes(q));
       setSearchResults({ users: matchedUsers, posts: matchedPosts, tags: matchedTags });
     } catch {}
     setSearchLoading(false);
@@ -114,12 +116,41 @@ export default function Topbar({ currentUserId }) {
     searchDebounce.current = setTimeout(() => doSearch(val), 300);
   };
 
+  // ── FIX: save to recent and navigate properly
+  const handleUserSelect = (username) => {
+    const updated = [username, ...recentSearches.filter(r => r !== username)].slice(0, 6);
+    setRecentSearches(updated);
+    localStorage.setItem('cc_recent_searches', JSON.stringify(updated));
+    setSearchVal('');
+    setFocus(false);
+    navigate(`/profile/${username}`);
+  };
+
+  const handlePostSelect = (postId, content) => {
+    const snippet = content?.slice(0, 30) || '';
+    const updated = [snippet, ...recentSearches.filter(r => r !== snippet)].slice(0, 6);
+    setRecentSearches(updated);
+    localStorage.setItem('cc_recent_searches', JSON.stringify(updated));
+    setFocus(false);
+    // Navigate to home with post highlighted (or just home)
+    navigate(`/home`);
+  };
+
+  const handleTagSelect = (tag) => {
+    const updated = [tag, ...recentSearches.filter(r => r !== tag)].slice(0, 6);
+    setRecentSearches(updated);
+    localStorage.setItem('cc_recent_searches', JSON.stringify(updated));
+    setSearchVal(tag);
+    setFocus(false);
+    doSearch(tag);
+  };
+
   const handleSearchSelect = (query) => {
     setSearchVal(query);
-    setFocus(false);
     const updated = [query, ...recentSearches.filter(r => r !== query)].slice(0, 6);
     setRecentSearches(updated);
     localStorage.setItem('cc_recent_searches', JSON.stringify(updated));
+    setFocus(false);
   };
 
   const clearRecent = (item) => {
@@ -129,6 +160,7 @@ export default function Topbar({ currentUserId }) {
   };
 
   const handleMessagesClick = () => setUnread(0);
+
   const handleLogout = () => {
     localStorage.removeItem('user');
     socket.disconnect();
@@ -155,8 +187,8 @@ export default function Topbar({ currentUserId }) {
           <div style={{
             ...S.searchWrap,
             ...(focus ? S.searchFocus : {}),
-            borderBottomLeftRadius: focus ? (searchVal || recentSearches.length ? 0 : 12) : 12,
-            borderBottomRightRadius: focus ? (searchVal || recentSearches.length ? 0 : 12) : 12,
+            borderBottomLeftRadius: focus && (searchVal || recentSearches.length) ? 0 : 12,
+            borderBottomRightRadius: focus && (searchVal || recentSearches.length) ? 0 : 12,
           }}>
             <FiSearch size={14} style={{ color: focus ? 'var(--accent)' : 'var(--text3)', flexShrink: 0, transition: 'color 0.2s' }} />
             <input
@@ -166,7 +198,10 @@ export default function Topbar({ currentUserId }) {
               value={searchVal}
               onChange={handleSearchChange}
               onFocus={() => setFocus(true)}
-              onBlur={() => setTimeout(() => setFocus(false), 200)}
+              // ── FIX: only close if mouse isn't inside dropdown
+              onBlur={() => {
+                if (!mouseInDropdown.current) setFocus(false);
+              }}
             />
             {searchVal && (
               <button onClick={() => { setSearchVal(''); setSearchResults({ users: [], posts: [], tags: [] }); searchRef.current?.focus(); }} style={S.clearBtn}>
@@ -177,27 +212,34 @@ export default function Topbar({ currentUserId }) {
 
           {/* Dropdown */}
           {focus && (
-            <div style={S.searchDropdown}>
-              {/* Loading */}
+            <div
+              style={S.searchDropdown}
+              onMouseEnter={() => { mouseInDropdown.current = true; }}
+              onMouseLeave={() => { mouseInDropdown.current = false; }}
+            >
               {searchLoading && (
                 <div style={S.dropSection}>
                   <div style={S.dropLoader}>Searching…</div>
                 </div>
               )}
 
-              {/* No query → show recents + trending */}
               {!searchVal && !searchLoading && (
                 <>
                   {recentSearches.length > 0 && (
                     <div style={S.dropSection}>
                       <div style={S.dropLabel}><FiClock size={11} /> Recent</div>
                       {recentSearches.map(r => (
-                        <div key={r} style={S.dropRow} onMouseDown={() => handleSearchSelect(r)}>
+                        <div
+                          key={r}
+                          style={S.dropRow}
+                          // ── FIX: use onMouseDown to fire before onBlur
+                          onMouseDown={(e) => { e.preventDefault(); handleSearchSelect(r); searchRef.current?.blur(); }}
+                        >
                           <FiClock size={13} style={{ color: 'var(--text3)', flexShrink: 0 }} />
                           <span style={S.dropText}>{r}</span>
                           <button
                             style={S.dropRemove}
-                            onMouseDown={e => { e.stopPropagation(); clearRecent(r); }}
+                            onMouseDown={e => { e.stopPropagation(); e.preventDefault(); clearRecent(r); }}
                           ><FiX size={11} /></button>
                         </div>
                       ))}
@@ -207,25 +249,28 @@ export default function Topbar({ currentUserId }) {
                     <div style={S.dropLabel}><FiTrendingUp size={11} /> Trending</div>
                     <div style={S.trendGrid}>
                       {TRENDING_SEARCHES.map(t => (
-                        <span key={t} style={S.trendChip} onMouseDown={() => handleSearchSelect(t)}>{t}</span>
+                        <span
+                          key={t}
+                          style={S.trendChip}
+                          onMouseDown={(e) => { e.preventDefault(); handleTagSelect(t); }}
+                        >{t}</span>
                       ))}
                     </div>
                   </div>
                 </>
               )}
 
-              {/* Results */}
               {searchVal && !searchLoading && (
                 <>
                   {searchResults.users.length > 0 && (
                     <div style={S.dropSection}>
                       <div style={S.dropLabel}><FiUser size={11} /> People</div>
                       {searchResults.users.map(u => (
-                        <Link
+                        // ── FIX: use onMouseDown + navigate instead of Link + onMouseDown conflict
+                        <div
                           key={u.username}
-                          to={`/profile/${u.username}`}
-                          style={S.dropRow}
-                          onMouseDown={() => handleSearchSelect(u.username)}
+                          style={{ ...S.dropRow, cursor: 'pointer' }}
+                          onMouseDown={(e) => { e.preventDefault(); handleUserSelect(u.username); }}
                         >
                           <div style={{ ...S.dropAvatar, background: aC(u.username) }}>
                             {u.username?.slice(0, 2).toUpperCase()}
@@ -234,25 +279,36 @@ export default function Topbar({ currentUserId }) {
                             <div style={S.dropText}>@{u.username}</div>
                             <div style={S.dropSub}>{u.department?.split(' & ')[0]} · {u.collegeName}</div>
                           </div>
-                        </Link>
+                          <span style={{ fontSize: 10, color: 'var(--text3)', flexShrink: 0 }}>View →</span>
+                        </div>
                       ))}
                     </div>
                   )}
+
                   {searchResults.tags.length > 0 && (
                     <div style={S.dropSection}>
                       <div style={S.dropLabel}><FiHash size={11} /> Tags</div>
                       <div style={S.trendGrid}>
                         {searchResults.tags.map(t => (
-                          <span key={t} style={S.trendChip} onMouseDown={() => handleSearchSelect(t)}>{t}</span>
+                          <span
+                            key={t}
+                            style={S.trendChip}
+                            onMouseDown={(e) => { e.preventDefault(); handleTagSelect(t); }}
+                          >{t}</span>
                         ))}
                       </div>
                     </div>
                   )}
+
                   {searchResults.posts.length > 0 && (
                     <div style={S.dropSection}>
                       <div style={S.dropLabel}><FiCode size={11} /> Posts</div>
                       {searchResults.posts.map(p => (
-                        <div key={p.id} style={S.dropRow} onMouseDown={() => handleSearchSelect(p.content?.slice(0, 30))}>
+                        <div
+                          key={p.id}
+                          style={{ ...S.dropRow, cursor: 'pointer' }}
+                          onMouseDown={(e) => { e.preventDefault(); handlePostSelect(p.id, p.content); }}
+                        >
                           <div style={{ ...S.dropAvatar, background: aC(p.username) }}>
                             {p.username?.slice(0, 2).toUpperCase()}
                           </div>
@@ -264,6 +320,7 @@ export default function Topbar({ currentUserId }) {
                       ))}
                     </div>
                   )}
+
                   {!hasResults && !searchLoading && (
                     <div style={{ padding: '20px', textAlign: 'center', color: 'var(--text3)', fontSize: 13 }}>
                       No results for "<strong>{searchVal}</strong>"
@@ -277,26 +334,22 @@ export default function Topbar({ currentUserId }) {
 
         {/* Right side */}
         <div style={S.right}>
-          {/* Live pill */}
           <div style={S.livePill}>
             <span style={S.liveDot} />
             <span style={S.liveText}>{activeUsers} online</span>
           </div>
 
-          {/* Theme toggle */}
           <button style={S.themeBtn} onClick={toggleTheme} title={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}>
             <div style={{ ...S.themeBall, transform: theme === 'dark' ? 'translateX(18px)' : 'translateX(0)' }} />
             <FiSun size={10} style={{ position: 'absolute', left: 5, color: theme === 'light' ? '#f59e0b' : '#64748b', transition: 'color 0.3s' }} />
             <FiMoon size={10} style={{ position: 'absolute', right: 5, color: theme === 'dark' ? '#818cf8' : '#64748b', transition: 'color 0.3s' }} />
           </button>
 
-          {/* Messages */}
           <Link to="/messages" style={S.iconBtn} title="Messages" onClick={handleMessagesClick}>
             <FiMessageSquare size={18} />
             {unread > 0 && <span style={S.badge}>{unread > 99 ? '99+' : unread}</span>}
           </Link>
 
-          {/* Notifications */}
           <button style={S.iconBtn} title="Notifications" onClick={() => { setShowNotifPanel(v => !v); setNotifs(0); }}>
             <FiBell size={18} />
             {notifs > 0 && <span style={{ ...S.badge, background: 'var(--rose)' }}>{notifs}</span>}
@@ -309,14 +362,12 @@ export default function Topbar({ currentUserId }) {
           )}
 
           <Link to="/profile" style={{ ...S.avatar, background: avatarBg }}>{initials}</Link>
-
           <button style={S.logoutBtn} onClick={handleLogout} title="Logout">
             <FiLogOut size={16} />
           </button>
         </div>
       </header>
 
-      {/* Notification panel */}
       {showNotifPanel && (
         <div style={S.notifPanel}>
           <div style={S.notifHead}>
@@ -346,7 +397,6 @@ const S = {
     display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', flexShrink: 0,
   },
   logoText: { fontSize: 16, fontWeight: 800, color: 'var(--text1)', letterSpacing: '-0.4px', whiteSpace: 'nowrap' },
-
   searchContainer: { flex: 1, maxWidth: 460, position: 'relative' },
   searchWrap: {
     display: 'flex', alignItems: 'center', gap: 8,
@@ -355,10 +405,7 @@ const S = {
   },
   searchFocus: { borderColor: 'var(--accent)', boxShadow: '0 0 0 3px var(--glow)', background: 'var(--surface)' },
   searchInput: { flex: 1, background: 'none', border: 'none', outline: 'none', fontSize: 14, color: 'var(--text1)', padding: '10px 0' },
-  clearBtn: {
-    background: 'none', border: 'none', cursor: 'pointer',
-    color: 'var(--text3)', display: 'flex', alignItems: 'center', padding: 2, borderRadius: 4,
-  },
+  clearBtn: { background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text3)', display: 'flex', alignItems: 'center', padding: 2, borderRadius: 4 },
   searchDropdown: {
     position: 'absolute', top: '100%', left: 0, right: 0,
     background: 'var(--surface)', border: '1.5px solid var(--accent)',
@@ -376,7 +423,6 @@ const S = {
     display: 'flex', alignItems: 'center', gap: 10,
     padding: '8px 14px', cursor: 'pointer', textDecoration: 'none',
     transition: 'background 0.12s',
-    ':hover': { background: 'var(--bg2)' },
   },
   dropText: { fontSize: 13, fontWeight: 600, color: 'var(--text1)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' },
   dropSub: { fontSize: 11, color: 'var(--text3)', marginTop: 1 },
@@ -393,7 +439,6 @@ const S = {
     background: 'rgba(79,97,210,0.08)', border: '1px solid rgba(79,97,210,0.2)',
     padding: '3px 10px', borderRadius: 20, cursor: 'pointer', transition: 'all 0.15s',
   },
-
   right: { display: 'flex', alignItems: 'center', gap: 8, marginLeft: 'auto', flexShrink: 0 },
   livePill: {
     display: 'flex', alignItems: 'center', gap: 6,
@@ -401,7 +446,6 @@ const S = {
   },
   liveDot: { width: 7, height: 7, borderRadius: '50%', background: 'var(--emerald)', animation: 'pulse-dot 2s infinite' },
   liveText: { fontSize: 12, fontWeight: 600, color: 'var(--emerald)' },
-
   themeBtn: {
     position: 'relative', width: 46, height: 24, borderRadius: 12,
     background: 'var(--bg3)', border: '1.5px solid var(--border)',
@@ -413,7 +457,6 @@ const S = {
     background: 'var(--accent)', transition: 'transform 0.3s cubic-bezier(0.4,0,0.2,1)',
     boxShadow: '0 2px 6px rgba(0,0,0,0.2)',
   },
-
   iconBtn: {
     position: 'relative', width: 36, height: 36, borderRadius: 9,
     background: 'var(--surface2)', border: '1px solid var(--border)',
