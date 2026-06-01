@@ -68,12 +68,19 @@ const COLORS = ['#2563eb','#0891b2','#7c3aed','#e11d48','#059669','#d97706'];
 const aC = (n) => COLORS[(n?.charCodeAt(0)||0) % COLORS.length];
 
 function LeaderboardPage() {
-  const [tab, setTab] = React.useState('posts');
-  const MOCK = {
-    posts:   [{ u:'vikram_r', v:24, dept:'CSE' },{ u:'ananya_s', v:18, dept:'IT' },{ u:'ravi_s', v:15, dept:'ECE' },{ u:'arjun_m', v:12, dept:'CSE' },{ u:'priya_k', v:9, dept:'IT' }],
-    likes:   [{ u:'ananya_s', v:340, dept:'IT' },{ u:'ravi_s', v:280, dept:'ECE' },{ u:'vikram_r', v:210, dept:'CSE' },{ u:'davin_b', v:180, dept:'IT' },{ u:'arjun_m', v:145, dept:'CSE' }],
-    repos:   [{ u:'vikram_r', v:8, dept:'CSE' },{ u:'arjun_m', v:6, dept:'CSE' },{ u:'priya_k', v:5, dept:'IT' },{ u:'ravi_s', v:4, dept:'ECE' },{ u:'davin_b', v:3, dept:'IT' }],
-  };
+  const [data, setData] = useState({ posts: [], likes: [], repos: [] });
+
+useEffect(() => {
+  userAPI.getAll().then(users => {
+    if (!Array.isArray(users)) return;
+    // Sort by posts_count, likes_count, repos_count from user objects
+    setData({
+      posts:  [...users].sort((a,b) => (b.posts_count||0)  - (a.posts_count||0) ).slice(0,5),
+      likes:  [...users].sort((a,b) => (b.likes_count||0)  - (a.likes_count||0) ).slice(0,5),
+      repos:  [...users].sort((a,b) => (b.repos_count||0)  - (a.repos_count||0) ).slice(0,5),
+    });
+  }).catch(() => {});
+}, []);
   const medals = ['🥇','🥈','🥉'];
 
   return (

@@ -1,6 +1,9 @@
 // src/pages/ExtraPages.jsx
 // All stub pages that make the sidebar links work
+// At the top of ExtraPages.jsx — add this line:
+export { SettingsPage } from './SettingsPage';
 
+// Then remove the old `export function SettingsPage() { ... }` block
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import {
@@ -343,7 +346,7 @@ export function SavedPage() {
 }
 
 // ─── SETTINGS PAGE ────────────────────────────────────────────────────────
-export function SettingsPage() {
+/*export function SettingsPage() {
   const user    = getUser();
   const [saved, setSaved] = useState(false);
   const [form,  setForm]  = useState({
@@ -443,4 +446,4 @@ export function SettingsPage() {
       </div>
     </PageWrap>
   );
-}
+} */
